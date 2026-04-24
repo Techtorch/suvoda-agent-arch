@@ -1,0 +1,2 @@
+{"scenario":"unsupported_language","input":{"name":"Workshop","lang":"de"},"expected_status":400}
+{"scenario":"long_name","input":{"name":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","lang":"en"},"expected_status":400}

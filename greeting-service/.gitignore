@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+evals/results/*.json
+!evals/results/.gitkeep
+harness/observability/demo_runs/*.json
+harness/observability/demo_runs/*.md
+!harness/observability/demo_runs/.gitkeep
+harness/control/generated/*.json
+!harness/control/generated/.gitkeep

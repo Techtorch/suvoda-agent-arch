@@ -1,0 +1,10 @@
+{"spec_id":"001","name":null,"lang":null,"expected_status":200,"expected_payload":{"greeting":"Hello, world!","language":"en"}}
+{"spec_id":"001","name":"Workshop","lang":"en","expected_status":200,"expected_payload":{"greeting":"Hello, Workshop!","language":"en"}}
+{"spec_id":"001","name":"Workshop","lang":"es","expected_status":200,"expected_payload":{"greeting":"Hola, Workshop!","language":"es"}}
+{"spec_id":"001","name":"Workshop","lang":"fr","expected_status":200,"expected_payload":{"greeting":"Bonjour, Workshop!","language":"fr"}}
+{"spec_id":"001","name":"  Suvoda  ","lang":"en","expected_status":200,"expected_payload":{"greeting":"Hello, Suvoda!","language":"en"}}
+{"spec_id":"001","name":"","lang":"es","expected_status":200,"expected_payload":{"greeting":"Hola, world!","language":"es"}}
+{"spec_id":"001","name":"Élodie","lang":"fr","expected_status":200,"expected_payload":{"greeting":"Bonjour, Élodie!","language":"fr"}}
+{"spec_id":"001","name":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","lang":"en","expected_status":400,"expected_payload":{"error":"Name must be 50 characters or fewer"}}
+{"spec_id":"001","name":"Workshop","lang":"de","expected_status":400,"expected_payload":{"error":"Unsupported language","supported_languages":["en","es","fr"]}}
+{"spec_id":"001","name":"   ","lang":"en","expected_status":200,"expected_payload":{"greeting":"Hello, world!","language":"en"}}

@@ -1,0 +1,208 @@
+version: 1
+pipeline:
+  id: greeting-service-workshop
+  principle: Every incident becomes infrastructure.
+  entrypoint: intake
+  agents:
+    intake:
+      label: Intake
+      phase: intake
+      reads: []
+      writes_ephemeral:
+        - incoming request
+      routes_to:
+        - planner
+
+    planner:
+      label: Planner agent
+      phase: planning
+      reads:
+        - AGENTS.md
+        - docs/architecture/overview.md
+        - docs/architecture/invariants.md
+        - docs/architecture/multi-agent-orchestration.md
+      writes_ephemeral:
+        - task decomposition
+      routes_to:
+        - design
+        - build
+        - test
+      chapter_ties:
+        - Ch 3: don't build an agent when a workflow will do
+        - Ch 4: AGENTS.md is the root guide
+
+    design:
+      label: Design agent
+      phase: design
+      reads:
+        - docs/specs/template.md
+      writes:
+        - docs/specs/001-hello-endpoint.md
+      routes_to:
+        - build
+        - test
+        - compliance
+      chapter_ties:
+        - Ch 2 shift 1: requirements become specs
+
+    build:
+      label: Build agent
+      phase: build
+      reads:
+        - docs/specs/001-hello-endpoint.md
+        - docs/architecture/invariants.md
+      writes:
+        - src/main.py
+        - src/greeter.py
+        - src/formats.py
+      routes_to:
+        - critic
+        - code_review
+        - security
+      chapter_ties:
+        - Ch 2 shift 2: writing code becomes curating code
+
+    test:
+      label: Test agent
+      phase: validation
+      reads:
+        - docs/specs/001-hello-endpoint.md
+        - docs/architecture/invariants.md
+      writes:
+        - tests/unit/test_greeter.py
+        - tests/integration/test_endpoint.py
+        - tests/properties/test_invariants.py
+        - evals/datasets/spec_compliance.jsonl
+      routes_to:
+        - critic
+        - compliance
+      chapter_ties:
+        - Ch 2 shift 3: testing is continuous
+
+    critic:
+      label: Critic agent
+      phase: review
+      reads:
+        - evals/runners/llm_judge.py
+        - evals/rubrics/code_review.md
+      writes_ephemeral:
+        - quality scorecard
+      routes_to:
+        - cicd
+      chapter_ties:
+        - Ch 3: actor-critic loop
+
+    code_review:
+      label: Code review agent
+      phase: review
+      reads:
+        - harness/sensors/review_agents/architectural_reviewer.md
+      writes_ephemeral:
+        - review findings
+      routes_to:
+        - cicd
+
+    security:
+      label: Security agent
+      phase: review
+      reads:
+        - harness/sensors/linters/architectural_rules.py
+      writes_ephemeral:
+        - deterministic pass/fail signal
+      routes_to:
+        - cicd
+
+    compliance:
+      label: Compliance agent
+      phase: review
+      reads:
+        - docs/architecture/invariants.md
+        - harness/sensors/linters/doc_sync_check.py
+        - harness/sensors/drift_detectors/invariant_check.py
+        - docs/validation/traceability-matrix.md
+      writes_ephemeral:
+        - deterministic pass/fail signal
+      routes_to:
+        - cicd
+      chapter_ties:
+        - Ch 6: deterministic enforcement over probabilistic compliance
+
+    cicd:
+      label: CI/CD agent
+      phase: gate
+      reads:
+        - .github/workflows/ci.yml
+        - .github/workflows/eval_gate.yml
+        - harness/tools/sandboxes/test_runner.sh
+      writes_ephemeral:
+        - workflow results
+      routes_to:
+        - release
+        - docs
+
+    release:
+      label: Release agent
+      phase: release
+      reads:
+        - docs/runbooks/deploy.md
+        - docs/runbooks/rollback.md
+      writes_ephemeral:
+        - deploy checklist completion
+      routes_to:
+        - deployed
+      chapter_ties:
+        - Ch 2 shift 4: docs become operating context
+
+    docs:
+      label: Docs agent
+      phase: release
+      reads:
+        - .claude/skills/update-docs/SKILL.md
+        - docs/validation/traceability-matrix.md
+      writes:
+        - docs/architecture/
+        - docs/specs/
+        - docs/validation/traceability-matrix.md
+      routes_to:
+        - deployed
+      chapter_ties:
+        - Ch 3: skills layer via progressive disclosure
+
+    deployed:
+      label: Deployed system
+      phase: runtime
+      reads: []
+      writes_ephemeral:
+        - production behavior
+      routes_to:
+        - monitoring
+
+    monitoring:
+      label: Monitoring agent
+      phase: runtime
+      reads:
+        - harness/observability/logs_config.yaml
+        - harness/observability/trace_schema.json
+      writes_ephemeral:
+        - traces and alerts
+      routes_to:
+        - incident
+      chapter_ties:
+        - Ch 3: observability layer
+
+    incident:
+      label: Incident agent
+      phase: feedback
+      reads:
+        - harness/observability/logs_config.yaml
+        - harness/observability/trace_schema.json
+        - evals/datasets/regression_cases.jsonl
+      writes:
+        - harness/sensors/linters/
+        - harness/sensors/drift_detectors/
+        - evals/datasets/regression_cases.jsonl
+        - docs/architecture/decisions/
+      routes_to:
+        - planner
+      chapter_ties:
+        - Ch 6: every failure becomes infrastructure

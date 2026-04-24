@@ -1,0 +1,2 @@
+{"scenario":"change_is_small","expectation":"Implementation should stay inside src/ and matching guides or sensors."}
+{"scenario":"guide_sensor_alignment","expectation":"Behavior changes should also update a measurable check."}

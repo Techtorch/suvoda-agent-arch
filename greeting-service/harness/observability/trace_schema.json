@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Run Trace",
+  "type": "object",
+  "required": ["task_id", "status", "gate_results"],
+  "properties": {
+    "task_id": { "type": "string" },
+    "status": { "type": "string", "enum": ["started", "passed", "failed"] },
+    "spec_id": { "type": "string" },
+    "gate_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "status"],
+        "properties": {
+          "name": { "type": "string" },
+          "status": { "type": "string" },
+          "details": { "type": "string" }
+        }
+      }
+    }
+  }
+}
