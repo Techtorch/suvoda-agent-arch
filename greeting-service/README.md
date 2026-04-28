@@ -1,48 +1,78 @@
 # TechTorch Agent Architecture Showcase
 
-This repository is a compact reference implementation of an AI-native software
-delivery environment. The application itself is intentionally small: a simple
-HTTP greeting service. The value of the repository is the surrounding harness:
-the guides, specs, sensors, evals, orchestration, and observability that make
-specialized agents safe to use in a continuous development loop.
+This repository is a plain, working example of how to organize software so AI
+agents can contribute safely.
 
-## What This Repository Shows
+The app itself is intentionally small. It is just a web service that returns a
+greeting. The real purpose of the repo is to show the **surrounding system**
+that makes agent-driven development easier to understand, easier to validate,
+and easier to trust.
 
-- How project intent is encoded as repo-native guides rather than informal
-  tribal knowledge.
-- How deterministic sensors and probabilistic evals work together.
-- How multi-agent orchestration can be represented directly in version control.
-- How failures can be converted into durable infrastructure instead of prompt
-  tweaks.
+## What This Repo Is Showing
 
-## Core Model
+Many people focus only on the model when they think about AI coding. This repo
+shows a different idea:
+
+- the model is only one part of the system
+- the repo needs clear instructions
+- the work needs checks and quality gates
+- the agent flow should be visible
+- failures should improve the system over time
+
+In short, this repo is less about "AI writes code" and more about
+"teams design an environment where AI can work well."
+
+## The Main Idea In One Line
 
 ```text
 Agent = Model + Harness
 ```
 
-- The model reasons.
-- The harness provides context, constraints, control flow, validation, and
-  feedback.
-- The repository stores both the product and the operating environment that
-  governs how agents work on the product.
+Here is what that means in simple terms:
 
-## End-to-End Flow
+- The **model** does the reasoning and generation.
+- The **harness** is the support system around it.
+- The harness includes instructions, specs, tests, evals, rules, workflow
+  steps, and trace outputs.
+
+If you remove the harness, you just have generated output.
+If you keep the harness, you get a process that can be reviewed and repeated.
+
+## Why The App Is So Simple
+
+The app is small on purpose.
+
+This helps readers focus on the structure around the app instead of getting
+lost in business logic. Because the product is so simple, it is easy to see
+what each supporting layer is doing.
+
+The app:
+
+- accepts a name
+- accepts a language
+- returns a greeting in English, Spanish, or French
+
+That is enough to demonstrate specs, tests, evals, orchestration, and incident
+feedback without adding unnecessary complexity.
+
+## End-To-End Flow
+
+The diagram below shows the full pipeline from request to feedback.
 
 ```mermaid
 flowchart TD
-    request["Request enters pipeline"]
-    planner["Planner agent<br/>reads AGENTS.md + architecture"]
-    design["Design agent<br/>writes specs"]
-    build["Build agent<br/>writes src/"]
-    test["Test agent<br/>writes tests/ + eval datasets"]
-    critic["Critic agent<br/>scores output"]
-    review["Review, security, compliance agents<br/>run deterministic checks"]
-    cicd["CI/CD agent<br/>runs merge gate"]
-    release["Release + docs agents<br/>use runbooks and skills"]
-    deploy["Deployed system"]
-    monitoring["Monitoring agent<br/>reads observability contracts"]
-    incident["Incident agent<br/>writes new harness artifacts"]
+    request["Request enters the system"]
+    planner["Planner agent<br/>understands the task and rules"]
+    design["Design agent<br/>updates or writes the spec"]
+    build["Build agent<br/>changes the product code"]
+    test["Test agent<br/>adds or updates checks"]
+    critic["Critic agent<br/>scores the result"]
+    review["Review, security, and compliance agents<br/>run hard checks"]
+    cicd["CI/CD agent<br/>runs the full gate"]
+    release["Release and docs agents<br/>prepare the result"]
+    deploy["System is ready to run"]
+    monitoring["Monitoring agent<br/>reads traces and outputs"]
+    incident["Incident agent<br/>turns failures into stronger repo artifacts"]
 
     request --> planner
     planner --> design
@@ -63,7 +93,37 @@ flowchart TD
     incident --> planner
 ```
 
-## Repository Layers
+In plain language, the flow works like this:
+
+1. A request comes in.
+2. The planner reads the repo guidance and breaks the work down.
+3. The design agent defines the expected behavior in a spec.
+4. The build agent updates the code.
+5. The test agent updates the checks.
+6. The critic and review layers examine the result.
+7. CI runs the same gate in a repeatable way.
+8. The system records what happened.
+9. If something goes wrong, the repo learns from it by adding stronger future
+   checks.
+
+## How To Read This Repo
+
+If you are new to this kind of architecture, read the repo in this order:
+
+1. `AGENTS.md`
+   This is the main set of instructions for an agent entering the repo.
+2. `docs/architecture/overview.md`
+   This gives the high-level picture.
+3. `docs/specs/001-hello-endpoint.md`
+   This shows how expected behavior is written down.
+4. `src/`
+   This is the small product itself.
+5. `tests/` and `evals/`
+   These show how the repo proves the behavior.
+6. `harness/control/` and `harness/observability/`
+   These show how the agent workflow is run and recorded.
+
+## Repository Shape
 
 ```text
 greeting-service/
@@ -78,38 +138,48 @@ greeting-service/
 └── .github/workflows/
 ```
 
-- `AGENTS.md`: root operating guide for any agent entering the repository.
-- `docs/`: architecture, specs, runbooks, validation mappings, and diagrams.
-- `src/`: the product code.
-- `tests/`: unit, integration, and invariant checks.
-- `evals/`: datasets, rubrics, runners, and results.
-- `harness/`: control plane, sensors, observability, and execution scripts.
-- `.claude/`: progressive-disclosure skills and reusable commands.
-- `.github/workflows/`: CI and scheduled validation entrypoints.
+Each folder has a different job:
+
+- `docs/` explains what the system is meant to do
+- `src/` contains the app code
+- `tests/` checks the behavior directly
+- `evals/` measures quality using reusable cases and rubrics
+- `harness/` contains the rules, control flow, and observability
+- `.claude/` stores reusable task-specific instructions
+- `.github/workflows/` runs the same checks in automation
 
 ## Quick Start
 
-### Run the Service
+### Run The Service
 
 ```bash
 cd greeting-service
 python3 -m src.main
 ```
 
-Open:
+Then open this URL:
 
 ```text
 http://127.0.0.1:8000/hello?name=Workshop&lang=fr
 ```
 
-### Run the Full Gate
+You should get a JSON response with a greeting.
+
+### Run The Full Local Gate
 
 ```bash
 cd greeting-service
 ./harness/tools/sandboxes/test_runner.sh
 ```
 
-### Run the Live Orchestration
+This command runs the important checks together. In simple terms, it asks:
+
+- does the code follow the architecture rules?
+- do the tests pass?
+- do the eval cases still pass?
+- do the documented invariants still point to real checks?
+
+### Run The Live Showcase Pipeline
 
 Happy path:
 
@@ -118,218 +188,288 @@ cd greeting-service
 ./harness/tools/sandboxes/run_showcase_pipeline.sh --scenario happy
 ```
 
-Feedback loop:
+Incident feedback path:
 
 ```bash
 cd greeting-service
 ./harness/tools/sandboxes/run_showcase_pipeline.sh --scenario incident
 ```
 
-Materialize the incident learning into repo artifacts:
+Incident feedback path, with artifacts written back into the repo:
 
 ```bash
 cd greeting-service
 ./harness/tools/sandboxes/run_showcase_pipeline.sh --scenario incident --apply-incident-learning
 ```
 
-## What Gets Produced At Runtime
+These runs are useful because they do not just execute code. They also show the
+sequence of agent stages and the files those stages depend on.
 
-- `evals/results/latest_spec_compliance.json`: latest deterministic eval result.
-- `harness/observability/showcase_runs/latest_pipeline_trace.json`: stage-by-stage
-  orchestration trace.
-- `harness/observability/showcase_runs/latest_pipeline_summary.md`: human-readable
-  execution summary.
-- `harness/control/generated/latest_incident_bundle.json`: incident-learning
-  bundle generated by the feedback-loop scenario.
+## What Gets Created When You Run Things
+
+- `evals/results/latest_spec_compliance.json`
+  The latest scoring result for the spec compliance dataset.
+- `harness/observability/showcase_runs/latest_pipeline_trace.json`
+  A machine-readable log of the pipeline steps.
+- `harness/observability/showcase_runs/latest_pipeline_summary.md`
+  A simpler summary of the same pipeline run.
+- `harness/control/generated/latest_incident_bundle.json`
+  A package of "what the repo should learn" from an incident scenario.
+
+These outputs are important because they make the workflow visible. Instead of
+guessing what happened, you can inspect the artifacts directly.
 
 ## Architecture Guide
 
 ### 1. Root Guides
 
-| File | Purpose |
+These are the first files that explain how the repo should be used.
+
+| File | Plain-language explanation |
 | --- | --- |
-| `AGENTS.md` | The primary operating contract for agents entering the repo. |
-| `CLAUDE.md` | Compatibility alias that points back to `AGENTS.md`. |
-| `README.md` | Human-facing system overview, structure, and run instructions. |
+| `AGENTS.md` | The main instruction sheet for any agent working in the repo. It explains the project purpose, the rules, and when to stop and ask a human. |
+| `CLAUDE.md` | A compatibility file that points back to `AGENTS.md`, so different tools can find the same instructions. |
+| `README.md` | The human-friendly overview you are reading now. |
 
 ### 2. Documentation Layer
 
-| Path | Purpose |
+This layer explains intent, constraints, and operating rules.
+
+| Path | Plain-language explanation |
 | --- | --- |
-| `docs/architecture/overview.md` | High-level system map. |
-| `docs/architecture/invariants.md` | Non-negotiable system properties and where they are enforced. |
-| `docs/architecture/multi-agent-orchestration.md` | Human-readable description of the agent pipeline. |
-| `docs/architecture/integrated_pipeline_agents_tied_to_repo.svg` | Visual architecture asset. |
-| `docs/architecture/decisions/0001-use-python-stdlib.md` | ADR: keep the system lightweight and portable. |
-| `docs/architecture/decisions/0002-no-outbound-network.md` | ADR: prohibit outbound network client behavior in app code. |
-| `docs/architecture/decisions/0003-guides-and-sensors-first.md` | ADR: a feature is incomplete without guidance and validation. |
-| `docs/specs/template.md` | Template used for writing new executable specs. |
-| `docs/specs/001-hello-endpoint.md` | Active feature spec for the greeting endpoint. |
-| `docs/runbooks/deploy.md` | Release operating procedure. |
-| `docs/runbooks/rollback.md` | Rollback operating procedure. |
-| `docs/validation/traceability-matrix.md` | Maps intent to enforcement artifacts. |
+| `docs/architecture/overview.md` | A simple map of how the repo is organized and why the pieces exist. |
+| `docs/architecture/invariants.md` | A short list of things that must always stay true, such as valid JSON output and no outbound network calls in app code. |
+| `docs/architecture/multi-agent-orchestration.md` | A human-readable description of how the specialized agents work together. |
+| `docs/architecture/integrated_pipeline_agents_tied_to_repo.svg` | A visual version of the architecture for presentations or quick review. |
+| `docs/architecture/decisions/0001-use-python-stdlib.md` | Explains why the repo stays lightweight and avoids extra dependencies. |
+| `docs/architecture/decisions/0002-no-outbound-network.md` | Explains why the service code is not allowed to make network calls. |
+| `docs/architecture/decisions/0003-guides-and-sensors-first.md` | Explains why a change is not complete until the guidance and checks are updated too. |
+| `docs/specs/template.md` | A starter template for writing future specs in a consistent way. |
+| `docs/specs/001-hello-endpoint.md` | The active feature spec for the greeting endpoint. It says what the service should do and what checks must exist. |
+| `docs/runbooks/deploy.md` | Step-by-step instructions for running or validating the service. |
+| `docs/runbooks/rollback.md` | Step-by-step instructions for safely undoing a bad change. |
+| `docs/validation/traceability-matrix.md` | A map that links intended behavior to the checks that prove it. |
 
 ### 3. Product Code
 
-| File | Purpose |
+This is the actual application.
+
+| File | Plain-language explanation |
 | --- | --- |
-| `src/main.py` | HTTP entrypoint and request routing. |
-| `src/greeter.py` | Core business logic, validation, and payload construction. |
-| `src/formats.py` | Greeting templates and language handling. |
-| `src/__init__.py` | Package marker. |
+| `src/main.py` | Starts the HTTP server and routes incoming requests. |
+| `src/greeter.py` | Contains the main business rules, validation, and response-building logic. |
+| `src/formats.py` | Stores the greeting text for each supported language. |
+| `src/__init__.py` | Marks the folder as a Python package. |
 
 ### 4. Test Layer
 
-| File | Purpose |
+These files prove that the app still behaves correctly.
+
+| File | Plain-language explanation |
 | --- | --- |
-| `tests/unit/test_formats.py` | Unit checks for formatting behavior. |
-| `tests/unit/test_greeter.py` | Unit checks for greeting logic and error handling. |
-| `tests/unit/test_showcase_pipeline.py` | Unit checks for the orchestration control plane. |
-| `tests/unit/test_llm_judge.py` | Unit checks for the offline critic helper. |
-| `tests/integration/test_endpoint.py` | End-to-end HTTP checks against the running service. |
-| `tests/properties/test_invariants.py` | Invariant-style checks for UTF-8 and default behavior. |
+| `tests/unit/test_formats.py` | Checks that greeting templates and supported languages behave as expected. |
+| `tests/unit/test_greeter.py` | Checks the main greeting rules, including defaults, trimming, and error handling. |
+| `tests/unit/test_showcase_pipeline.py` | Checks that the pipeline manifest loads correctly and that the incident bundle logic works safely. |
+| `tests/unit/test_llm_judge.py` | Checks the small offline critic helper used in the showcase. |
+| `tests/integration/test_endpoint.py` | Starts the service and tests it like a real caller would. |
+| `tests/properties/test_invariants.py` | Checks general rules that should always hold true, such as valid UTF-8 JSON output. |
 
 ### 5. Eval Layer
 
-| File | Purpose |
+Tests usually check correctness directly. Evals are used here as an extra,
+reusable measurement layer.
+
+| File | Plain-language explanation |
 | --- | --- |
-| `evals/datasets/spec_compliance.jsonl` | Source cases for deterministic behavior scoring. |
-| `evals/datasets/regression_cases.jsonl` | Regression-oriented cases for incident learning. |
-| `evals/datasets/code_quality.jsonl` | Additional quality-oriented examples. |
-| `evals/rubrics/code_review.md` | Review rubric for the critic layer. |
-| `evals/rubrics/spec_compliance.md` | Contract for deterministic spec scoring. |
-| `evals/runners/rubric_eval.py` | Evaluates the implementation against the dataset. |
-| `evals/runners/llm_judge.py` | Offline critic helper that turns the rubric and eval results into a reusable review packet. |
-| `evals/results/.gitkeep` | Keeps the results directory in the repository. |
+| `evals/datasets/spec_compliance.jsonl` | A list of example inputs and expected outputs used to score whether the service still matches the spec. |
+| `evals/datasets/regression_cases.jsonl` | Cases that represent failures or risky edge cases we want to protect against in the future. |
+| `evals/datasets/code_quality.jsonl` | Extra examples used to think about quality-related review scenarios. |
+| `evals/rubrics/code_review.md` | The review criteria used by the critic layer. |
+| `evals/rubrics/spec_compliance.md` | Explains how spec compliance is measured and what score is required to pass. |
+| `evals/runners/rubric_eval.py` | Runs the spec compliance dataset against the current code. |
+| `evals/runners/llm_judge.py` | Builds a simple review packet from the rubric and eval results so the critic stage has a structured output. |
+| `evals/results/.gitkeep` | Keeps the results folder in version control even when it is empty. |
 
 ### 6. Harness Layer
 
+This is the part that turns a small app into an agent-ready environment.
+
 #### Control Plane
 
-| File | Purpose |
+The control plane describes the agent workflow and runs it.
+
+| File | Plain-language explanation |
 | --- | --- |
-| `harness/control/orchestration.yaml` | Machine-readable manifest of the multi-agent pipeline. |
-| `harness/control/run_showcase_pipeline.py` | Runnable orchestrator that executes the agent stages. |
-| `harness/control/README.md` | Overview of the control-plane folder. |
-| `harness/control/generated/.gitkeep` | Keeps the generated output folder in the repository. |
+| `harness/control/orchestration.yaml` | A machine-readable description of which agent reads which files, writes which files, and passes work to whom next. |
+| `harness/control/run_showcase_pipeline.py` | A runnable script that walks through the agent stages and records what happened. |
+| `harness/control/README.md` | A short explanation of the control-plane folder. |
+| `harness/control/generated/.gitkeep` | Keeps the generated folder in version control. |
 
 #### Guides
 
-| File | Purpose |
+Guides tell agents what they should do before they take action.
+
+| File | Plain-language explanation |
 | --- | --- |
-| `harness/guides/README.md` | Explains the guide concept and points back to the primary guide set. |
+| `harness/guides/README.md` | Explains the idea of repo guides and points readers to the main guide files. |
 
 #### Sensors
 
-| File | Purpose |
+Sensors are checks that look at the result after work has been done.
+
+| File | Plain-language explanation |
 | --- | --- |
-| `harness/sensors/linters/architectural_rules.py` | Enforces hard architectural constraints. |
-| `harness/sensors/linters/doc_sync_check.py` | Ensures shipped specs remain measurable. |
-| `harness/sensors/linters/skill_validator.py` | Validates skill frontmatter and structure. |
-| `harness/sensors/drift_detectors/invariant_check.py` | Checks that declared invariants still map to real enforcement. |
-| `harness/sensors/review_agents/architectural_reviewer.md` | Human- or agent-readable architectural review checklist. |
+| `harness/sensors/linters/architectural_rules.py` | Blocks changes that break hard architectural rules, such as forbidden network imports. |
+| `harness/sensors/linters/doc_sync_check.py` | Makes sure shipped specs are structured correctly and still have matching eval coverage. |
+| `harness/sensors/linters/skill_validator.py` | Checks that skill files have the required frontmatter and basic structure. |
+| `harness/sensors/drift_detectors/invariant_check.py` | Checks that every declared invariant still points to a real enforcement artifact. |
+| `harness/sensors/review_agents/architectural_reviewer.md` | A simple review checklist for architecture-focused review. |
 
 #### Observability
 
-| File | Purpose |
+Observability means "what can we inspect after a run?"
+
+| File | Plain-language explanation |
 | --- | --- |
-| `harness/observability/logs_config.yaml` | Logging contract. |
-| `harness/observability/trace_schema.json` | Schema for orchestration trace output. |
-| `harness/observability/showcase_runs/.gitkeep` | Keeps the runtime trace directory in the repository. |
+| `harness/observability/logs_config.yaml` | Describes the logging setup for the showcase. |
+| `harness/observability/trace_schema.json` | Defines the expected shape of a pipeline trace file. |
+| `harness/observability/showcase_runs/.gitkeep` | Keeps the trace output directory in version control. |
 
 #### Tools
 
-| File | Purpose |
+These are helper entrypoints and tool contracts used by the harness.
+
+| File | Plain-language explanation |
 | --- | --- |
-| `harness/tools/sandboxes/test_runner.sh` | Runs the full local gate. |
-| `harness/tools/sandboxes/run_showcase_pipeline.sh` | Runs the live orchestration showcase. |
-| `harness/tools/mcp_servers/repo_tools/README.md` | Contract for repo-scoped MCP tooling. |
-| `harness/tools/mcp_servers/observability/README.md` | Contract for observability MCP tooling. |
+| `harness/tools/sandboxes/test_runner.sh` | Runs the main local validation sequence in one command. |
+| `harness/tools/sandboxes/run_showcase_pipeline.sh` | Starts the live multi-agent showcase flow. |
+| `harness/tools/mcp_servers/repo_tools/README.md` | Describes what a repo-aware MCP tool server would be expected to provide. |
+| `harness/tools/mcp_servers/observability/README.md` | Describes what an observability MCP tool server would be expected to provide. |
 
 ### 7. Skills Layer
 
-| File | Purpose |
+Skills are focused instruction packs for common tasks.
+
+| File | Plain-language explanation |
 | --- | --- |
-| `.claude/skills/add-feature/SKILL.md` | Feature-delivery workflow. |
-| `.claude/skills/add-feature/CHECKLIST.md` | Gate checklist for feature work. |
-| `.claude/skills/add-feature/examples/reference-pr.md` | Example of a complete feature change. |
-| `.claude/skills/fix-bug/SKILL.md` | Bug-fix workflow. |
-| `.claude/skills/update-docs/SKILL.md` | Documentation maintenance workflow. |
-| `.claude/skills/write-test/SKILL.md` | Test-authoring workflow. |
-| `.claude/commands/review-pr.md` | Reusable review instruction set. |
+| `.claude/skills/add-feature/SKILL.md` | Explains the correct process for adding or extending behavior. |
+| `.claude/skills/add-feature/CHECKLIST.md` | Lists what must be true before a feature change is considered complete. |
+| `.claude/skills/add-feature/examples/reference-pr.md` | Shows what a well-shaped feature change should include. |
+| `.claude/skills/fix-bug/SKILL.md` | Explains the preferred process for bug fixes. |
+| `.claude/skills/update-docs/SKILL.md` | Explains how to update docs without breaking traceability. |
+| `.claude/skills/write-test/SKILL.md` | Explains how to add tests in a focused and useful way. |
+| `.claude/commands/review-pr.md` | Reusable review instructions. |
 | `.claude/commands/run-evals.md` | Reusable eval command reference. |
 
 ### 8. CI Layer
 
-| File | Purpose |
+These workflows repeat the important checks automatically.
+
+| File | Plain-language explanation |
 | --- | --- |
-| `.github/workflows/ci.yml` | Main pull-request gate. |
-| `.github/workflows/eval_gate.yml` | Explicit eval workflow. |
-| `.github/workflows/nightly_drift.yml` | Scheduled drift detection workflow. |
+| `.github/workflows/ci.yml` | Runs the main pull request checks. |
+| `.github/workflows/eval_gate.yml` | Runs the eval layer as an explicit workflow. |
+| `.github/workflows/nightly_drift.yml` | Runs drift detection on a schedule. |
 
 ### 9. Repository Infrastructure
 
-| File | Purpose |
+These files support packaging and repo hygiene.
+
+| File | Plain-language explanation |
 | --- | --- |
-| `pyproject.toml` | Packaging metadata and script entrypoints. |
-| `.gitignore` | Repository hygiene for generated artifacts. |
-| `.env.example` | Minimal environment variable template. |
+| `pyproject.toml` | Stores packaging metadata and command entrypoints. |
+| `.gitignore` | Prevents generated or unnecessary files from being committed accidentally. |
+| `.env.example` | Shows the environment variable pattern the repo expects. |
 
 ## How The Pieces Work Together
 
 ### Guides
 
-Guides tell an agent what to do before it acts.
+Guides explain intent before work begins.
 
-- `AGENTS.md` sets the baseline operating contract.
-- `docs/specs/` defines feature intent in executable form.
-- `docs/architecture/` defines stable constraints and rationale.
-- `.claude/skills/` loads focused workflows only when needed.
+Examples:
+
+- `AGENTS.md` tells an agent how to behave in this repo
+- `docs/specs/` tells the system what the feature should do
+- `docs/architecture/` explains what must stay stable
+- `.claude/skills/` gives focused task instructions when needed
 
 ### Sensors
 
-Sensors check what happened after action.
+Sensors check the result after work happens.
 
-- `tests/` validate behavior directly.
-- `evals/` measure quality and compliance with reusable cases.
-- `harness/sensors/linters/` enforce non-negotiable constraints.
-- `harness/sensors/drift_detectors/` keep the harness from decaying.
-- `.github/workflows/` repeat the same gate in CI.
+Examples:
+
+- `tests/` check that behavior still works
+- `evals/` score reusable examples
+- `harness/sensors/` block rule violations and drift
+- `.github/workflows/` rerun the same checks in automation
 
 ### Control Plane
 
-The control plane is the contract between agents.
+The control plane explains the flow between specialized agents.
 
-- `harness/control/orchestration.yaml` defines who reads what, writes what,
-  and hands off to whom.
-- `harness/control/run_showcase_pipeline.py` executes that plan and emits traces.
-- `docs/architecture/multi-agent-orchestration.md` makes the same flow easy to
-  explain to humans.
+In simple language, it answers:
+
+- who does what
+- which files they rely on
+- what happens next
+- where the trace gets written
+
+The main files are:
+
+- `harness/control/orchestration.yaml`
+- `harness/control/run_showcase_pipeline.py`
+- `docs/architecture/multi-agent-orchestration.md`
 
 ## Suggested Walkthrough
 
-1. Start with `AGENTS.md` and `docs/architecture/overview.md`.
-2. Open `docs/architecture/multi-agent-orchestration.md`.
-3. Run `./harness/tools/sandboxes/run_showcase_pipeline.sh --scenario happy`.
-4. Open the generated trace in `harness/observability/showcase_runs/`.
-5. Show the spec, product code, tests, evals, and sensors.
-6. Run the incident scenario to show how the feedback loop enriches the harness.
+If you are showing this repo to someone else, this is a simple order that works
+well:
 
-## Design Principles Encoded Here
+1. Start with `AGENTS.md` so people see the basic rules.
+2. Open `docs/architecture/overview.md` for the big picture.
+3. Open `docs/specs/001-hello-endpoint.md` so the expected behavior is clear.
+4. Show `src/` so people can see the tiny app.
+5. Show `tests/`, `evals/`, and `harness/sensors/` so they can see how the app
+   is checked.
+6. Run `./harness/tools/sandboxes/run_showcase_pipeline.sh --scenario happy`.
+7. Open `harness/observability/showcase_runs/` to show the trace and summary.
+8. Run the incident scenario to show how the repo learns from failure.
 
-- Deterministic constraints over prompt-only compliance
-- Specs before implementation
-- Continuous validation over end-of-phase validation
-- Versioned orchestration, not hidden orchestration
-- Failures converted into durable repo artifacts
+## Design Principles In Simple Terms
+
+- **Rules should be enforced in code where possible.**
+  It is better to block a bad change with a real check than to rely on a prompt
+  that says "please do not do this."
+- **Specs should come before implementation.**
+  The expected behavior should be written down clearly before code changes are
+  made.
+- **Validation should happen continuously.**
+  Good checks should run throughout the workflow, not only at the end.
+- **Workflows should be visible.**
+  If multiple agents are involved, their flow should be represented in the repo
+  and not hidden inside a tool.
+- **Failures should improve the system.**
+  A good team does not only fix the bug. It also improves the harness so the
+  same type of mistake is less likely next time.
 
 ## Visual Assets
 
-- Flow and orchestration narrative: `docs/architecture/multi-agent-orchestration.md`
-- SVG architecture asset: `docs/architecture/integrated_pipeline_agents_tied_to_repo.svg`
+- Flow and orchestration explanation:
+  `docs/architecture/multi-agent-orchestration.md`
+- SVG visual:
+  `docs/architecture/integrated_pipeline_agents_tied_to_repo.svg`
 
-## Shareability
+## Final Takeaway
 
-This repository is structured to be understandable without external context.
-The product surface is small, the control plane is explicit, the validation
-layer is runnable, and the architecture is documented directly beside the code.
+This repository is designed to be understandable without special background
+knowledge.
+
+The product is small on purpose.
+The rules are stored in the repo.
+The checks are runnable.
+The workflow is visible.
+The outputs are inspectable.
+
+That is the core message of the showcase.
