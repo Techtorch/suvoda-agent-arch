@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from harness.control.run_demo_pipeline import (
+from harness.control.run_showcase_pipeline import (
     INCIDENT_SCENARIO_ID,
     apply_incident_learning,
     build_incident_learning_bundle,
@@ -11,7 +11,7 @@ from harness.control.run_demo_pipeline import (
 )
 
 
-class DemoPipelineTests(unittest.TestCase):
+class ShowcasePipelineTests(unittest.TestCase):
     def test_manifest_loads_expected_agents(self):
         manifest = load_simple_yaml(
             Path("harness/control/orchestration.yaml")
@@ -40,7 +40,10 @@ class DemoPipelineTests(unittest.TestCase):
                 root / "evals/datasets/regression_cases.jsonl"
             ).read_text().splitlines()
             records = [json.loads(line) for line in regression_lines if line.strip()]
-            self.assertEqual([INCIDENT_SCENARIO_ID], [item["scenario"] for item in records])
+            self.assertEqual(
+                [INCIDENT_SCENARIO_ID],
+                [item["scenario"] for item in records],
+            )
 
 
 if __name__ == "__main__":

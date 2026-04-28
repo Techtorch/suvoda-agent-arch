@@ -1,1 +1,1 @@
-"""Control-plane helpers for the workshop demo."""
+"""Control-plane helpers for the architecture showcase."""

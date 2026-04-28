@@ -1,7 +1,7 @@
 # Greeting Service Agent Instructions
 
 ## Project Purpose
-This repository exists to demonstrate an agent-ready development harness.
+This repository exists to showcase an agent-ready development harness.
 The product is intentionally small: a single HTTP endpoint that returns a
 greeting in one of three languages.
 

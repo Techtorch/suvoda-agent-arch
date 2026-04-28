@@ -5,7 +5,7 @@ coordinate across the harness.
 
 ## Why It Lives Here
 
-The workshop claim is that orchestration should be inspectable like code:
+The claim here is that orchestration should be inspectable like code:
 - humans can review it
 - agents can load it
 - changes are versioned
@@ -14,7 +14,7 @@ The workshop claim is that orchestration should be inspectable like code:
 ## Files
 
 - `orchestration.yaml` is the machine-readable map of the pipeline.
-- `run_demo_pipeline.py` is the runnable orchestrator for workshop demos.
+- `run_showcase_pipeline.py` is the runnable orchestrator for the showcase.
 - `generated/` stores generated incident-learning bundles.
 
 Read this alongside `docs/architecture/multi-agent-orchestration.md`.

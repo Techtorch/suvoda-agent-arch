@@ -1,6 +1,6 @@
 # Architecture Overview
 
-This repository demonstrates a tiny application inside a deliberately visible
+This repository places a tiny application inside a deliberately visible
 delivery harness.
 
 ## The Product

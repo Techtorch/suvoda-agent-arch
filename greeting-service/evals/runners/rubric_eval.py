@@ -1,4 +1,4 @@
-"""Deterministic spec compliance evaluator for the workshop demo."""
+"""Deterministic spec compliance evaluator for the architecture showcase."""
 
 import argparse
 import json

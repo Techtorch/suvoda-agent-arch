@@ -1,1 +1,1 @@
-"""Evaluation package for the workshop demo."""
+"""Evaluation package for the architecture showcase."""

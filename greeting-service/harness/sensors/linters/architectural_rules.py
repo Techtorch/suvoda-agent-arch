@@ -1,4 +1,4 @@
-"""Deterministic architectural checks for the workshop demo."""
+"""Deterministic architectural checks for the architecture showcase."""
 
 import ast
 import sys

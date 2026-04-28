@@ -1,6 +1,6 @@
 version: 1
 pipeline:
-  id: greeting-service-workshop
+  id: greeting-service-showcase
   principle: Every incident becomes infrastructure.
   entrypoint: intake
   agents:

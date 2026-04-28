@@ -5,7 +5,7 @@ multi-agent software delivery can be represented directly in version control.
 
 ## Why This Exists
 
-The workshop argument is not just that agents can write code. It is that teams
+The argument is not just that agents can write code. It is that teams
 move up a level and start engineering the environment where specialized agents
 work together safely.
 
@@ -13,7 +13,7 @@ This file makes that orchestration explicit:
 - which agent exists
 - which repo artifacts it reads
 - which repo artifacts it writes
-- which workshop principle the agent demonstrates
+- which architecture principle the agent demonstrates
 
 ## Repo-Native Flow
 
@@ -83,13 +83,13 @@ flowchart TD
 | Monitoring | `harness/observability/logs_config.yaml`, `harness/observability/trace_schema.json` | Observability signal | Makes the post-deploy feedback surface explicit. |
 | Incident | Existing traces, eval failures, or drift findings | New files in `harness/sensors/`, `evals/datasets/`, `docs/architecture/decisions/` | Compounds the harness after failure instead of only patching prompts. |
 
-## What To Show In The Workshop
+## Suggested Walkthrough
 
 1. Open this file and explain the flow from planner to incident.
 2. Jump from each node to the real file path it references.
-3. Run `./harness/tools/sandboxes/run_demo_pipeline.sh --scenario happy`.
-4. Open `harness/observability/demo_runs/latest_pipeline_trace.json`.
-5. Run `./harness/tools/sandboxes/run_demo_pipeline.sh --scenario incident`.
+3. Run `./harness/tools/sandboxes/run_showcase_pipeline.sh --scenario happy`.
+4. Open `harness/observability/showcase_runs/latest_pipeline_trace.json`.
+5. Run `./harness/tools/sandboxes/run_showcase_pipeline.sh --scenario incident`.
 6. Emphasize the final feedback edge: incidents enrich the repo before the
    next planning pass.
 

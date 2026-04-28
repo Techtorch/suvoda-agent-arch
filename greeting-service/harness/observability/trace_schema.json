@@ -5,7 +5,7 @@
   "required": ["task_id", "status", "gate_results"],
   "properties": {
     "task_id": { "type": "string" },
-    "status": { "type": "string", "enum": ["started", "passed", "failed"] },
+    "status": { "type": "string", "enum": ["started", "passed", "warning", "failed"] },
     "spec_id": { "type": "string" },
     "gate_results": {
       "type": "array",

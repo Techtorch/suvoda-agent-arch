@@ -1,1 +1,1 @@
-"""Sensors package for the workshop demo."""
+"""Sensors package for the architecture showcase."""

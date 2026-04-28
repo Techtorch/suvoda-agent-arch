@@ -21,9 +21,9 @@ class GreeterTests(unittest.TestCase):
         )
 
     def test_name_is_trimmed(self):
-        status_code, payload = build_response(name="  Suvoda  ", lang="en")
+        status_code, payload = build_response(name="  Visitor  ", lang="en")
         self.assertEqual(200, status_code)
-        self.assertEqual("Hello, Suvoda!", payload["greeting"])
+        self.assertEqual("Hello, Visitor!", payload["greeting"])
 
     def test_name_length_is_limited(self):
         too_long_name = "a" * (MAX_NAME_LENGTH + 1)

@@ -1,4 +1,4 @@
-"""Runnable multi-agent orchestration demo for the workshop repository."""
+"""Runnable multi-agent orchestration showcase for the repository."""
 
 from __future__ import annotations
 
@@ -7,25 +7,24 @@ import contextlib
 import io
 import json
 import subprocess
-import sys
 import textwrap
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from evals.runners import rubric_eval
+from evals.runners import llm_judge, rubric_eval
 from harness.sensors.drift_detectors import invariant_check
 from harness.sensors.linters import architectural_rules, doc_sync_check
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = ROOT / "harness" / "control" / "orchestration.yaml"
-TRACE_DIR = ROOT / "harness" / "observability" / "demo_runs"
+TRACE_DIR = ROOT / "harness" / "observability" / "showcase_runs"
 GENERATED_DIR = ROOT / "harness" / "control" / "generated"
 TRACE_PATH = TRACE_DIR / "latest_pipeline_trace.json"
 SUMMARY_PATH = TRACE_DIR / "latest_pipeline_summary.md"
 INCIDENT_BUNDLE_PATH = GENERATED_DIR / "latest_incident_bundle.json"
-INCIDENT_SCENARIO_ID = "demo_incident_guard"
+INCIDENT_SCENARIO_ID = "incident_feedback_guard"
 
 
 def _next_significant_line(lines: list[str], start_index: int) -> tuple[int, str] | None:
@@ -145,15 +144,6 @@ def count_list_items_under_heading(path: Path, heading: str) -> int:
     return count
 
 
-def count_numbered_lines(path: Path) -> int:
-    count = 0
-    for line in path.read_text().splitlines():
-        normalized = line.lstrip()
-        if normalized.startswith(("1. ", "2. ", "3. ", "4. ", "5. ")):
-            count += 1
-    return count
-
-
 def discover_unittest_names(root: Path) -> list[str]:
     loader = unittest.defaultTestLoader
     suite = loader.discover(str(root / "tests"))
@@ -176,13 +166,13 @@ def write_json(path: Path, payload: dict[str, Any]) -> None:
 
 
 def build_incident_learning_bundle(root: Path) -> dict[str, Any]:
-    linter_path = root / "harness" / "sensors" / "linters" / "demo_incident_guard.py"
+    linter_path = root / "harness" / "sensors" / "linters" / "incident_feedback_guard.py"
     adr_path = (
         root
         / "docs"
         / "architecture"
         / "decisions"
-        / "0999-demo-incident-learning.md"
+        / "0999-incident-feedback-loop.md"
     )
     regression_path = root / "evals" / "datasets" / "regression_cases.jsonl"
 
@@ -195,10 +185,10 @@ def build_incident_learning_bundle(root: Path) -> dict[str, Any]:
                 "kind": "linter",
                 "content": textwrap.dedent(
                     '''\
-                    """Demo incident guard created by the incident agent."""
+                    """Incident feedback guard created by the incident agent."""
 
                     INCIDENT_GUARD = {
-                        "scenario": "demo_incident_guard",
+                        "scenario": "incident_feedback_guard",
                         "intent": "Show that production failures become reusable harness checks."
                     }
                     '''
@@ -210,22 +200,22 @@ def build_incident_learning_bundle(root: Path) -> dict[str, Any]:
                 "kind": "adr",
                 "content": textwrap.dedent(
                     """\
-                    # ADR 0999: Demo Incident Learning
+                    # ADR 0999: Incident Feedback Loop
 
                     ## Status
                     Accepted
 
                     ## Context
-                    The workshop demo needs a visible example of the feedback loop
+                    The repository needs a visible example of the feedback loop
                     where an incident produces a durable harness change.
 
                     ## Decision
-                    Keep a demo incident artifact that shows how a production issue
-                    would create a new linter and regression case.
+                    Keep an incident artifact that shows how a production issue
+                    can create a new linter and regression case.
 
                     ## Consequences
                     - The feedback loop is visible in the repository.
-                    - Audiences can see that failures enrich the environment.
+                    - Readers can see that failures enrich the environment.
                     """
                 ).strip()
                 + "\n",
@@ -344,18 +334,16 @@ def stage_test(context: dict[str, Any]) -> dict[str, Any]:
 
 
 def stage_critic(context: dict[str, Any]) -> dict[str, Any]:
-    rubric_path = ROOT / "evals" / "rubrics" / "code_review.md"
-    results = [rubric_eval.evaluate_case(case) for case in rubric_eval.load_cases()]
-    score, passed, total = rubric_eval.score_results(results)
-    dimensions = count_numbered_lines(rubric_path)
+    packet = llm_judge.build_review_packet()
     details = (
-        f"Loaded critic rubric with {dimensions} dimensions; current deterministic score is "
-        f"{score}/5.0 ({passed}/{total} cases)."
+        f"Loaded critic rubric with {packet['dimension_count']} dimensions; "
+        f"score {packet['score']}/5.0 against gate {packet['gate']} "
+        f"({packet['passed_cases']}/{packet['total_cases']} cases passed)."
     )
     return {
         "status": "passed",
         "details": details,
-        "outputs": {"score": score, "passed_cases": passed, "total_cases": total},
+        "outputs": packet,
     }
 
 
@@ -411,9 +399,12 @@ def stage_cicd(context: dict[str, Any]) -> dict[str, Any]:
     combined_output = "\n".join(
         part for part in [result.stdout.strip(), result.stderr.strip()] if part
     )
+    details = f"Full gate {'passed' if result.returncode == 0 else 'failed'} via {' '.join(command)}."
+    if combined_output:
+        details = f"{details}\n{combined_output}"
     return {
         "status": "passed" if result.returncode == 0 else "failed",
-        "details": combined_output,
+        "details": details,
         "outputs": {"command": " ".join(command), "returncode": result.returncode},
     }
 
@@ -453,7 +444,7 @@ def stage_monitoring(context: dict[str, Any]) -> dict[str, Any]:
         f"Monitoring agent loaded trace schema with required fields {required_fields}."
     )
     if context["scenario"] == "incident":
-        details += " Injected demo incident signal for feedback-loop walkthrough."
+        details += " Injected incident signal for feedback-loop walkthrough."
     return {"status": status, "details": details, "outputs": {"required_fields": required_fields}}
 
 
@@ -523,7 +514,7 @@ PRIMARY_EXECUTION_ORDER = [
 
 def render_summary(trace: dict[str, Any]) -> str:
     lines = [
-        "# Demo Pipeline Summary",
+        "# Showcase Pipeline Summary",
         "",
         f"- Task ID: `{trace['task_id']}`",
         f"- Scenario: `{trace['scenario']}`",
@@ -602,7 +593,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--request",
         default="Add or validate the hello endpoint within the declared harness constraints.",
-        help="Short natural-language request to push through the demo pipeline.",
+        help="Short natural-language request to push through the showcase pipeline.",
     )
     parser.add_argument(
         "--scenario",

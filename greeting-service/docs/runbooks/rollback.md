@@ -1,6 +1,6 @@
 # Rollback Runbook
 
-This demo has no persistent state. Rollback is simply a code rollback.
+This service has no persistent state. Rollback is simply a code rollback.
 
 ## Procedure
 1. Revert the offending change.

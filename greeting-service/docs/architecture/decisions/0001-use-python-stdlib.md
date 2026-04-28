@@ -4,9 +4,9 @@
 Accepted
 
 ## Context
-This repository is a workshop artifact. It needs to be understandable quickly,
-run almost anywhere, and keep the audience focused on the harness rather than
-framework configuration.
+This repository is a compact architecture artifact. It needs to be
+understandable quickly, run almost anywhere, and keep attention on the harness
+rather than framework configuration.
 
 ## Decision
 Use Python and the standard library for the application and the harness.

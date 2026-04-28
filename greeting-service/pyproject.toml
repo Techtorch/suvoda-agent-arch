@@ -3,15 +3,15 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "greeting-service-demo"
+name = "greeting-service-showcase"
 version = "0.1.0"
-description = "Minimal workshop demo for agentic development architecture"
+description = "Compact architecture showcase for AI-native software delivery"
 readme = "README.md"
 requires-python = ">=3.9"
 
 [project.scripts]
 greeting-service = "src.main:main"
-greeting-service-demo-pipeline = "harness.control.run_demo_pipeline:main"
+greeting-service-showcase-pipeline = "harness.control.run_showcase_pipeline:main"
 
 [tool.setuptools.packages.find]
 include = ["src", "src.*", "harness", "harness.*"]

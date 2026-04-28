@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-The demo is meant to show agentic development patterns, not service
+The repository is meant to show agentic development patterns, not service
 integration. Outbound calls add noise, increase failure modes, and dilute the
 architecture lesson.
 

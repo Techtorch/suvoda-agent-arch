@@ -1,1 +1,1 @@
-"""Harness package for the workshop demo."""
+"""Harness package for the architecture showcase."""

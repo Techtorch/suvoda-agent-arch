@@ -5,4 +5,11 @@
 - Code change
 - Test update
 - Eval dataset update
-- Short note explaining which invariant or guide changed
+- Traceability matrix update
+- Short note explaining which invariant, ADR, or runbook changed
+
+## Review Summary Template
+- Intent: what behavior changed and why
+- Guide impact: which spec, invariant, ADR, or runbook changed
+- Sensor impact: which tests, evals, or linters now prove the behavior
+- Control-plane impact: whether agent responsibilities or orchestration changed

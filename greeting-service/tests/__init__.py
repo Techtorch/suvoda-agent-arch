@@ -1,1 +1,1 @@
-"""Test package for the workshop demo."""
+"""Test package for the architecture showcase."""

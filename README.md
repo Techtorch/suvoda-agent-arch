@@ -14,11 +14,6 @@ observability.
 - [`greeting-service/README.md`](./greeting-service/README.md)
   Full technical walkthrough of the system, flow, structure, and file-level
   responsibilities.
-- [`harness-repo-structure (1).md`](./harness-repo-structure%20%281%29.md)
-  Reference repo structure and explanatory notes for the harness design.
-- [`suvoda-workshop-narrative.html`](./suvoda-workshop-narrative.html)
-  Narrative and chapter outline for the accompanying architecture workshop.
-
 ## Start Here
 
 For the full implementation and documentation, open:

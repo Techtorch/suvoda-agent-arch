@@ -1,6 +1,6 @@
 # Invariants
 
-These properties must hold for every change to the demo repository.
+These properties must hold for every change to the repository.
 
 1. `/hello` responses are always valid UTF-8 JSON.
 2. The service only accepts `en`, `es`, and `fr`.

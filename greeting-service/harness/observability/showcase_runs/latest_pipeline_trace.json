@@ -1,0 +1,89 @@
+{
+  "task_id": "greeting-service-showcase-incident-20260428160305",
+  "status": "warning",
+  "spec_id": "001",
+  "scenario": "incident",
+  "request": "Add or validate the hello endpoint within the declared harness constraints.",
+  "gate_results": [
+    {
+      "name": "intake",
+      "status": "passed",
+      "details": "Captured request: Add or validate the hello endpoint within the declared harness constraints."
+    },
+    {
+      "name": "planner",
+      "status": "passed",
+      "details": "Primary planning pass: loaded 4 repo guides and produced 3 work items."
+    },
+    {
+      "name": "design",
+      "status": "passed",
+      "details": "Loaded spec template and active spec; found 4 acceptance criteria."
+    },
+    {
+      "name": "build",
+      "status": "passed",
+      "details": "Validated 3 build artifacts under src/."
+    },
+    {
+      "name": "test",
+      "status": "passed",
+      "details": "Discovered 16 tests and 10 spec compliance eval cases."
+    },
+    {
+      "name": "critic",
+      "status": "passed",
+      "details": "Loaded critic rubric with 5 dimensions; score 5.0/5.0 against gate 4.5 (10/10 cases passed)."
+    },
+    {
+      "name": "code_review",
+      "status": "passed",
+      "details": "Loaded architectural reviewer with 4 review questions."
+    },
+    {
+      "name": "security",
+      "status": "passed",
+      "details": "No violations found."
+    },
+    {
+      "name": "compliance",
+      "status": "passed",
+      "details": "doc_sync_check=passed | invariant_check=passed"
+    },
+    {
+      "name": "cicd",
+      "status": "passed",
+      "details": "Full gate passed via ./harness/tools/sandboxes/test_runner.sh.\n{\n  \"score\": 5.0,\n  \"gate\": 4.5,\n  \"passed_cases\": 10,\n  \"total_cases\": 10,\n  \"status\": \"passed\"\n}\n{\n  \"invariant_count\": 4,\n  \"enforcement_paths\": [\n    \"tests/properties/test_invariants.py\",\n    \"tests/unit/test_greeter.py\",\n    \"tests/integration/test_endpoint.py\",\n    \"harness/sensors/linters/architectural_rules.py\",\n    \"harness/sensors/linters/doc_sync_check.py\"\n  ],\n  \"status\": \"passed\"\n}\ntest_hello_endpoint_returns_json (integration.test_endpoint.EndpointTests) ... ok\ntest_unknown_route_returns_404 (integration.test_endpoint.EndpointTests) ... ok\ntest_blank_name_falls_back_to_default (properties.test_invariants.InvariantTests) ... ok\ntest_responses_encode_as_utf8_json (properties.test_invariants.InvariantTests) ... ok\ntest_render_greeting_uses_selected_template (unit.test_formats.FormatTests) ... ok\ntest_supported_languages_are_stable (unit.test_formats.FormatTests) ... ok\ntest_defaults_are_applied (unit.test_greeter.GreeterTests) ... ok\ntest_name_is_trimmed (unit.test_greeter.GreeterTests) ... ok\ntest_name_length_is_limited (unit.test_greeter.GreeterTests) ... ok\ntest_supported_language_is_used (unit.test_greeter.GreeterTests) ... ok\ntest_unsupported_language_fails (unit.test_greeter.GreeterTests) ... ok\ntest_build_review_packet_uses_repo_rubric_and_eval_results (unit.test_llm_judge.LLMJudgeTests) ... ok\ntest_extract_dimensions_reads_numbered_rubric_items (unit.test_llm_judge.LLMJudgeTests) ... ok\ntest_render_markdown_report_lists_dimensions (unit.test_llm_judge.LLMJudgeTests) ... ok\ntest_incident_learning_bundle_can_be_applied_idempotently (unit.test_showcase_pipeline.ShowcasePipelineTests) ... ok\ntest_manifest_loads_expected_agents (unit.test_showcase_pipeline.ShowcasePipelineTests) ... ok\n\n----------------------------------------------------------------------\nRan 16 tests in 1.023s\n\nOK"
+    },
+    {
+      "name": "release",
+      "status": "passed",
+      "details": "Release agent loaded deploy.md and rollback.md as operating context."
+    },
+    {
+      "name": "docs",
+      "status": "passed",
+      "details": "Docs agent loaded update-docs skill and traceability matrix from .claude/skills/update-docs/SKILL.md and docs/validation/traceability-matrix.md."
+    },
+    {
+      "name": "deployed",
+      "status": "passed",
+      "details": "Deployment checkpoint reached; monitoring can now inspect runtime behavior."
+    },
+    {
+      "name": "monitoring",
+      "status": "warning",
+      "details": "Monitoring agent loaded trace schema with required fields ['task_id', 'status', 'gate_results']. Injected incident signal for feedback-loop walkthrough."
+    },
+    {
+      "name": "incident",
+      "status": "passed",
+      "details": "Incident signal converted into a reusable harness-learning bundle. Bundle written to harness/control/generated/latest_incident_bundle.json."
+    },
+    {
+      "name": "planner_feedback",
+      "status": "passed",
+      "details": "Feedback loop: loaded 4 repo guides and produced 3 work items."
+    }
+  ]
+}

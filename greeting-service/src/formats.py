@@ -1,4 +1,4 @@
-"""Greeting formats used by the demo service."""
+"""Greeting formats used by the showcase service."""
 
 TEMPLATES = {
     "en": "Hello, {name}!",
