@@ -9,7 +9,7 @@ the app itself. The interesting part is everything around it: the instructions,
 specs, tests, checks, orchestration, and trace files that help AI agents work
 safely and predictably.
 
-In plain language, this repo shows how to answer a practical question:
+This repo is built to answer a practical question:
 
 **If AI can help write code, what needs to exist around that AI so the work is
 clear, reviewable, and safe to ship?**

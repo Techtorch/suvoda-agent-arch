@@ -38,7 +38,7 @@ Here is what that means in simple terms:
 If you remove the harness, you just have generated output.
 If you keep the harness, you get a process that can be reviewed and repeated.
 
-## Why The App Is So Simple
+## Why The App Is Small
 
 The app is small on purpose.
 
@@ -93,7 +93,7 @@ flowchart TD
     incident --> planner
 ```
 
-In plain language, the flow works like this:
+The flow works like this:
 
 1. A request comes in.
 2. The planner reads the repo guidance and breaks the work down.
@@ -172,7 +172,7 @@ cd greeting-service
 ./harness/tools/sandboxes/test_runner.sh
 ```
 
-This command runs the important checks together. In simple terms, it asks:
+This command runs the important checks together. It checks:
 
 - does the code follow the architecture rules?
 - do the tests pass?
@@ -225,7 +225,7 @@ guessing what happened, you can inspect the artifacts directly.
 
 These are the first files that explain how the repo should be used.
 
-| File | Plain-language explanation |
+| File | Purpose |
 | --- | --- |
 | `AGENTS.md` | The main instruction sheet for any agent working in the repo. It explains the project purpose, the rules, and when to stop and ask a human. |
 | `CLAUDE.md` | A compatibility file that points back to `AGENTS.md`, so different tools can find the same instructions. |
@@ -235,7 +235,7 @@ These are the first files that explain how the repo should be used.
 
 This layer explains intent, constraints, and operating rules.
 
-| Path | Plain-language explanation |
+| Path | Purpose |
 | --- | --- |
 | `docs/architecture/overview.md` | A simple map of how the repo is organized and why the pieces exist. |
 | `docs/architecture/invariants.md` | A short list of things that must always stay true, such as valid JSON output and no outbound network calls in app code. |
@@ -254,7 +254,7 @@ This layer explains intent, constraints, and operating rules.
 
 This is the actual application.
 
-| File | Plain-language explanation |
+| File | Purpose |
 | --- | --- |
 | `src/main.py` | Starts the HTTP server and routes incoming requests. |
 | `src/greeter.py` | Contains the main business rules, validation, and response-building logic. |
@@ -265,7 +265,7 @@ This is the actual application.
 
 These files prove that the app still behaves correctly.
 
-| File | Plain-language explanation |
+| File | Purpose |
 | --- | --- |
 | `tests/unit/test_formats.py` | Checks that greeting templates and supported languages behave as expected. |
 | `tests/unit/test_greeter.py` | Checks the main greeting rules, including defaults, trimming, and error handling. |
@@ -279,7 +279,7 @@ These files prove that the app still behaves correctly.
 Tests usually check correctness directly. Evals are used here as an extra,
 reusable measurement layer.
 
-| File | Plain-language explanation |
+| File | Purpose |
 | --- | --- |
 | `evals/datasets/spec_compliance.jsonl` | A list of example inputs and expected outputs used to score whether the service still matches the spec. |
 | `evals/datasets/regression_cases.jsonl` | Cases that represent failures or risky edge cases we want to protect against in the future. |
@@ -298,7 +298,7 @@ This is the part that turns a small app into an agent-ready environment.
 
 The control plane describes the agent workflow and runs it.
 
-| File | Plain-language explanation |
+| File | Purpose |
 | --- | --- |
 | `harness/control/orchestration.yaml` | A machine-readable description of which agent reads which files, writes which files, and passes work to whom next. |
 | `harness/control/run_showcase_pipeline.py` | A runnable script that walks through the agent stages and records what happened. |
@@ -309,7 +309,7 @@ The control plane describes the agent workflow and runs it.
 
 Guides tell agents what they should do before they take action.
 
-| File | Plain-language explanation |
+| File | Purpose |
 | --- | --- |
 | `harness/guides/README.md` | Explains the idea of repo guides and points readers to the main guide files. |
 
@@ -317,7 +317,7 @@ Guides tell agents what they should do before they take action.
 
 Sensors are checks that look at the result after work has been done.
 
-| File | Plain-language explanation |
+| File | Purpose |
 | --- | --- |
 | `harness/sensors/linters/architectural_rules.py` | Blocks changes that break hard architectural rules, such as forbidden network imports. |
 | `harness/sensors/linters/doc_sync_check.py` | Makes sure shipped specs are structured correctly and still have matching eval coverage. |
@@ -329,7 +329,7 @@ Sensors are checks that look at the result after work has been done.
 
 Observability means "what can we inspect after a run?"
 
-| File | Plain-language explanation |
+| File | Purpose |
 | --- | --- |
 | `harness/observability/logs_config.yaml` | Describes the logging setup for the showcase. |
 | `harness/observability/trace_schema.json` | Defines the expected shape of a pipeline trace file. |
@@ -339,7 +339,7 @@ Observability means "what can we inspect after a run?"
 
 These are helper entrypoints and tool contracts used by the harness.
 
-| File | Plain-language explanation |
+| File | Purpose |
 | --- | --- |
 | `harness/tools/sandboxes/test_runner.sh` | Runs the main local validation sequence in one command. |
 | `harness/tools/sandboxes/run_showcase_pipeline.sh` | Starts the live multi-agent showcase flow. |
@@ -350,7 +350,7 @@ These are helper entrypoints and tool contracts used by the harness.
 
 Skills are focused instruction packs for common tasks.
 
-| File | Plain-language explanation |
+| File | Purpose |
 | --- | --- |
 | `.claude/skills/add-feature/SKILL.md` | Explains the correct process for adding or extending behavior. |
 | `.claude/skills/add-feature/CHECKLIST.md` | Lists what must be true before a feature change is considered complete. |
@@ -365,7 +365,7 @@ Skills are focused instruction packs for common tasks.
 
 These workflows repeat the important checks automatically.
 
-| File | Plain-language explanation |
+| File | Purpose |
 | --- | --- |
 | `.github/workflows/ci.yml` | Runs the main pull request checks. |
 | `.github/workflows/eval_gate.yml` | Runs the eval layer as an explicit workflow. |
@@ -375,7 +375,7 @@ These workflows repeat the important checks automatically.
 
 These files support packaging and repo hygiene.
 
-| File | Plain-language explanation |
+| File | Purpose |
 | --- | --- |
 | `pyproject.toml` | Stores packaging metadata and command entrypoints. |
 | `.gitignore` | Prevents generated or unnecessary files from being committed accidentally. |
@@ -409,7 +409,7 @@ Examples:
 
 The control plane explains the flow between specialized agents.
 
-In simple language, it answers:
+It answers:
 
 - who does what
 - which files they rely on
@@ -437,7 +437,7 @@ well:
 7. Open `harness/observability/showcase_runs/` to show the trace and summary.
 8. Run the incident scenario to show how the repo learns from failure.
 
-## Design Principles In Simple Terms
+## Design Principles
 
 - **Rules should be enforced in code where possible.**
   It is better to block a bad change with a real check than to rely on a prompt
